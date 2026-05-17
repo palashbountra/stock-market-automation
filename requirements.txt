@@ -1,0 +1,18 @@
+# Core data & math
+pandas>=2.0
+numpy>=1.24
+pyyaml>=6.0
+
+# Environment / secrets
+python-dotenv>=1.0
+
+# API & web server
+fastapi>=0.110
+uvicorn[standard]>=0.29
+
+# Zerodha Kite Connect
+# Uncomment when ready to go live:
+# kiteconnect>=5.0
+
+# Testing
+pytest>=8.0

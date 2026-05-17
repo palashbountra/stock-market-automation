@@ -1,0 +1,289 @@
+{
+  "initial_capital": 100000,
+  "cash": 80612.13619499993,
+  "positions": {},
+  "trade_history": [
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 30,
+      "price": 3128.25,
+      "timestamp": "2025-09-03",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "INFY",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 3,
+      "price": 1713.92,
+      "timestamp": "2025-09-05",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "INFY",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 3,
+      "price": 1649.41,
+      "timestamp": "2025-09-09",
+      "net_pnl": -195.01,
+      "outcome": "LOSS"
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 30,
+      "price": 3145.41,
+      "timestamp": "2025-09-24",
+      "net_pnl": 486.49,
+      "outcome": "WIN"
+    },
+    {
+      "symbol": "INFY",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 58,
+      "price": 1634.28,
+      "timestamp": "2025-09-24",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "INFY",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 58,
+      "price": 1554.41,
+      "timestamp": "2025-10-01",
+      "net_pnl": -4659.51,
+      "outcome": "LOSS"
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 28,
+      "price": 3159.64,
+      "timestamp": "2025-10-08",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 28,
+      "price": 3077.16,
+      "timestamp": "2025-10-13",
+      "net_pnl": -2335.29,
+      "outcome": "LOSS"
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 28,
+      "price": 3124.62,
+      "timestamp": "2025-10-15",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "RELIANCE",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 1,
+      "price": 3834.42,
+      "timestamp": "2025-10-16",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 28,
+      "price": 3073.61,
+      "timestamp": "2025-10-16",
+      "net_pnl": -1454.1,
+      "outcome": "LOSS"
+    },
+    {
+      "symbol": "INFY",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 55,
+      "price": 1516.22,
+      "timestamp": "2025-10-16",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "INFY",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 55,
+      "price": 1435.07,
+      "timestamp": "2025-10-29",
+      "net_pnl": -4486.93,
+      "outcome": "LOSS"
+    },
+    {
+      "symbol": "INFY",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 53,
+      "price": 1481.59,
+      "timestamp": "2025-11-03",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 1,
+      "price": 2761.13,
+      "timestamp": "2025-11-18",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "INFY",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 53,
+      "price": 1427.07,
+      "timestamp": "2025-11-21",
+      "net_pnl": -2912.25,
+      "outcome": "LOSS"
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 1,
+      "price": 2661.55,
+      "timestamp": "2025-11-24",
+      "net_pnl": -100.38,
+      "outcome": "LOSS"
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 28,
+      "price": 2711.18,
+      "timestamp": "2025-11-26",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 28,
+      "price": 2636.41,
+      "timestamp": "2025-11-28",
+      "net_pnl": -2115.71,
+      "outcome": "LOSS"
+    },
+    {
+      "symbol": "RELIANCE",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 1,
+      "price": 4014.9,
+      "timestamp": "2025-12-03",
+      "net_pnl": 179.28,
+      "outcome": "WIN"
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 29,
+      "price": 2665.07,
+      "timestamp": "2025-12-04",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "INFY",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 3,
+      "price": 1288.49,
+      "timestamp": "2025-12-23",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 29,
+      "price": 2787.0,
+      "timestamp": "2026-01-12",
+      "net_pnl": 3511.72,
+      "outcome": "WIN"
+    },
+    {
+      "symbol": "INFY",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 3,
+      "price": 1317.83,
+      "timestamp": "2026-02-12",
+      "net_pnl": 86.83,
+      "outcome": "WIN"
+    },
+    {
+      "symbol": "RELIANCE",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 19,
+      "price": 4247.74,
+      "timestamp": "2026-02-20",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "RELIANCE",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 19,
+      "price": 4248.5,
+      "timestamp": "2026-03-09",
+      "net_pnl": -9.78,
+      "outcome": "LOSS"
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "BUY",
+      "qty": 30,
+      "price": 2703.6,
+      "timestamp": "2026-03-30",
+      "net_pnl": 0.0,
+      "outcome": ""
+    },
+    {
+      "symbol": "TCS",
+      "strategy": "macd_crossover",
+      "side": "SELL",
+      "qty": 30,
+      "price": 2533.49,
+      "timestamp": "2026-04-07",
+      "net_pnl": -5126.1,
+      "outcome": "LOSS"
+    }
+  ],
+  "session_start": "2026-04-07T11:16:59.096899",
+  "last_updated": "2026-04-07T11:17:02.707387"
+}

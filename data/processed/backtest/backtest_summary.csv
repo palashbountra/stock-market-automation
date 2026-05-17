@@ -1,0 +1,7 @@
+symbol,strategy,initial_capital,final_capital,total_pnl,total_return_pct,total_trades,wins,losses,win_rate_pct,avg_win,avg_loss,profit_factor,max_drawdown_pct,sharpe_ratio,max_win_streak,max_loss_streak,best_trade_pnl,worst_trade_pnl
+RELIANCE,macd_crossover,100000,104419.45,4419.46,4.42,4,2,2,50.0,5512.88,-3303.15,1.669,-6.94,-0.3047,2,1,5821.17,-5917.46
+RELIANCE,vwap_reversion,100000,96086.62,-3913.38,-3.91,1,0,1,0.0,0.0,-3913.38,0.0,-5.36,-2.1133,0,1,-3913.38,-3913.38
+TCS,macd_crossover,100000,70462.85,-26391.41,-29.54,16,3,13,18.75,1328.44,-2336.67,0.1312,-31.83,-2.1074,1,6,3581.49,-4183.86
+TCS,vwap_reversion,100000,92220.59,-7779.41,-7.78,1,0,1,0.0,0.0,-7779.41,0.0,-10.21,-1.8644,0,1,-7779.41,-7779.41
+INFY,macd_crossover,100000,83005.97,-16994.03,-16.99,6,2,4,33.33,3668.34,-6082.68,0.3015,-29.07,-1.4158,1,4,6539.79,-8368.11
+INFY,vwap_reversion,100000,93069.46,-6930.54,-6.93,1,0,1,0.0,0.0,-6930.54,0.0,-6.93,-3.2646,0,1,-6930.54,-6930.54

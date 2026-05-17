@@ -1,0 +1,82 @@
+# =============================================================================
+# Trading System Configuration
+# All runtime parameters live here. Never hardcode values in Python files.
+# =============================================================================
+
+system:
+  name: "IndiaTrader"
+  version: "1.0.0"
+  mode: "paper"           # Options: mock | paper | live
+  log_level: "INFO"       # DEBUG | INFO | WARNING | ERROR
+
+# -----------------------------------------------------------------------------
+# Broker / API Credentials
+# Values are loaded from .env file automatically — never hardcode here.
+# -----------------------------------------------------------------------------
+broker:
+  name: "zerodha"
+  api_key: ""             # loaded from .env → KITE_API_KEY
+  api_secret: ""          # loaded from .env → KITE_API_SECRET
+  access_token: ""        # loaded from .env → KITE_ACCESS_TOKEN (set by auth.py)
+  redirect_url: "http://127.0.0.1:5000/"
+
+# -----------------------------------------------------------------------------
+# Universe of stocks to trade
+# NSE symbols exactly as used by Zerodha (exchange:SYMBOL)
+# -----------------------------------------------------------------------------
+universe:
+  exchange: "NSE"
+  symbols:
+    - "RELIANCE"
+    - "TCS"
+    - "INFY"
+
+# -----------------------------------------------------------------------------
+# Data settings
+# -----------------------------------------------------------------------------
+data:
+  # How many calendar days of history to pull on first run
+  historical_days: 365
+  # Kite Connect interval strings: minute | 3minute | 5minute | 15minute | 30minute | 60minute | day
+  interval: "day"
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  db_path: "data/db/market_data.db"  # can override with env: TRADING_DB_PATH=/path/to/db
+  # If mode=mock, use synthetic data instead of hitting the API
+  use_mock: true
+
+# -----------------------------------------------------------------------------
+# Indicators (used by Phase 2)
+# -----------------------------------------------------------------------------
+indicators:
+  moving_averages: [20, 50, 200]
+  rsi_period: 14
+  macd:
+    fast: 12
+    slow: 26
+    signal: 9
+  vwap_interval: "day"
+
+# -----------------------------------------------------------------------------
+# Strategy defaults (used by Phase 3)
+# -----------------------------------------------------------------------------
+strategy:
+  default: "rsi_dma_crossover"
+  risk_per_trade_pct: 1.0    # % of capital to risk per trade
+  stop_loss_pct: 2.0         # % below entry price
+
+# -----------------------------------------------------------------------------
+# Backtesting (used by Phase 4)
+# -----------------------------------------------------------------------------
+backtest:
+  initial_capital: 100000    # INR
+  commission_pct: 0.03       # 0.03% per leg (approx Zerodha brokerage)
+  slippage_pct: 0.05         # 0.05% slippage assumption
+
+# -----------------------------------------------------------------------------
+# Dashboard / API server (used by Phase 7)
+# -----------------------------------------------------------------------------
+dashboard:
+  host: "0.0.0.0"
+  port: 8000
+  reload: true

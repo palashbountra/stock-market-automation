@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IndiaTrader Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0f0; min-height: 100vh; }
+
+    /* ── Layout ── */
+    .header { background: #1a1a2e; border-bottom: 1px solid #2a2a4a; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
+    .header h1 { font-size: 1.3rem; font-weight: 700; color: #7c9ef8; letter-spacing: 0.5px; }
+    .header .mode-badge { background: #1e3a5f; color: #4fc3f7; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .header .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #4caf50; margin-right: 6px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    .main { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto auto; gap: 18px; padding: 24px; max-width: 1600px; margin: 0 auto; }
+
+    /* ── Cards ── */
+    .card { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; padding: 20px; }
+    .card.wide { grid-column: span 2; }
+    .card.full { grid-column: span 3; }
+    .card h2 { font-size: 0.8rem; color: #888aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; font-weight: 600; }
+
+    /* ── KPI tiles ── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; grid-column: span 3; }
+    .kpi { background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 12px; padding: 18px 20px; }
+    .kpi .label { font-size: 0.75rem; color: #888aaa; margin-bottom: 6px; }
+    .kpi .value { font-size: 1.6rem; font-weight: 700; }
+    .kpi .sub { font-size: 0.78rem; color: #888aaa; margin-top: 4px; }
+    .pos { color: #4caf50; } .neg { color: #f44336; } .neu { color: #7c9ef8; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    th { text-align: left; padding: 8px 10px; color: #888aaa; font-weight: 600; border-bottom: 1px solid #2a2a4a; font-size: 0.72rem; text-transform: uppercase; }
+    td { padding: 9px 10px; border-bottom: 1px solid #1e1e32; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #1e1e35; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
+    .badge.buy { background: #1b3a2a; color: #4caf50; }
+    .badge.sell { background: #3a1b1b; color: #f44336; }
+    .badge.hold { background: #2a2a1b; color: #ffc107; }
+    .badge.win { background: #1b3a2a; color: #4caf50; }
+    .badge.loss { background: #3a1b1b; color: #f44336; }
+
+    /* ── Chart container ── */
+    .chart-wrap { position: relative; height: 240px; }
+
+    /* ── Signal cards ── */
+    .signal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .sig-card { background: #12122a; border: 1px solid #2a2a4a; border-radius: 8px; padding: 12px; }
+    .sig-card .sym { font-size: 0.9rem; font-weight: 700; color: #e0e0f0; }
+    .sig-card .strat { font-size: 0.68rem; color: #888aaa; margin-bottom: 8px; }
+    .sig-card .price { font-size: 1.1rem; font-weight: 600; }
+    .sig-card .reason { font-size: 0.68rem; color: #666888; margin-top: 6px; line-height: 1.4; }
+
+    /* ── Buttons ── */
+    .btn { background: #2a3a6a; color: #7c9ef8; border: 1px solid #3a4a8a; border-radius: 8px; padding: 8px 16px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+    .btn:hover { background: #3a4a8a; }
+    .btn.primary { background: #1e3a5f; color: #4fc3f7; border-color: #4fc3f7; }
+    .actions { display: flex; gap: 10px; margin-bottom: 16px; }
+
+    /* ── Empty state ── */
+    .empty { color: #555577; font-size: 0.85rem; text-align: center; padding: 30px; }
+
+    /* ── Refresh ── */
+    .refresh-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .last-updated { font-size: 0.72rem; color: #555577; }
+    .loading { color: #7c9ef8; font-size: 0.8rem; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #0f0f1a; } ::-webkit-scrollbar-thumb { background: #2a2a4a; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📈 IndiaTrader Dashboard</h1>
+  <div style="display:flex;align-items:center;gap:16px">
+    <span id="mode-badge" class="mode-badge">MOCK MODE</span>
+    <span><span class="status-dot"></span><span id="status-text" style="font-size:0.8rem;color:#888aaa">Connecting...</span></span>
+    <button class="btn" onclick="refreshAll()">↻ Refresh</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPI Row -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="label">Portfolio Value</div>
+      <div class="value neu" id="kpi-portfolio">—</div>
+      <div class="sub" id="kpi-portfolio-sub">Loading...</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Total P&L</div>
+      <div class="value" id="kpi-pnl">—</div>
+      <div class="sub" id="kpi-pnl-sub">—</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Realised P&L</div>
+      <div class="value" id="kpi-realised">—</div>
+      <div class="sub">Closed trades</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Unrealised P&L</div>
+      <div class="value" id="kpi-unrealised">—</div>
+      <div class="sub">Open positions</div>
+    </div>
+  </div>
+
+  <!-- Equity Curve -->
+  <div class="card wide">
+    <div class="refresh-bar">
+      <h2>Equity Curve</h2>
+      <span class="last-updated" id="eq-updated"></span>
+    </div>
+    <div class="chart-wrap"><canvas id="equityChart"></canvas></div>
+  </div>
+
+  <!-- Live Quotes -->
+  <div class="card">
+    <h2>Live Quotes</h2>
+    <div id="quotes-content"><p class="empty">Loading quotes...</p></div>
+  </div>
+
+  <!-- Signals -->
+  <div class="card full">
+    <div class="refresh-bar">
+      <h2>Latest Signals</h2>
+      <button class="btn" onclick="runSignals()">⚡ Regenerate</button>
+    </div>
+    <div class="signal-grid" id="signals-grid">
+      <p class="empty">Loading signals...</p>
+    </div>
+  </div>
+
+  <!-- Open Positions -->
+  <div class="card">
+    <h2>Open Positions</h2>
+    <div id="positions-content"><p class="empty">No open positions</p></div>
+  </div>
+
+  <!-- Recent Trades -->
+  <div class="card wide">
+    <div class="refresh-bar">
+      <h2>Recent Trades (Paper)</h2>
+      <span class="last-updated" id="trades-updated"></span>
+    </div>
+    <div id="trades-content"><p class="empty">No trades yet</p></div>
+  </div>
+
+  <!-- Backtest Summary -->
+  <div class="card full">
+    <div class="refresh-bar">
+      <h2>Backtest Results</h2>
+      <button class="btn primary" onclick="runBacktest()">▶ Run Backtest</button>
+    </div>
+    <div id="backtest-content"><p class="empty">No backtest results. Click Run Backtest.</p></div>
+  </div>
+
+</div>
+
+<script>
+// Use relative path so it works when served from FastAPI at localhost:8000
+const API = window.location.protocol === 'file:'
+  ? 'http://localhost:8000/api'   // fallback if opened directly (won't have data)
+  : '/api';                        // served from FastAPI — same origin, no CORS
+let equityChart = null;
+
+const fmt = (n) => '₹' + Number(n).toLocaleString('en-IN', {maximumFractionDigits: 0});
+const fmtPct = (n) => (n >= 0 ? '+' : '') + Number(n).toFixed(2) + '%';
+const colorClass = (n) => n > 0 ? 'pos' : n < 0 ? 'neg' : 'neu';
+const signalLabel = (s) => s === 1 ? '<span class="badge buy">BUY</span>' : s === -1 ? '<span class="badge sell">SELL</span>' : '<span class="badge hold">HOLD</span>';
+
+async function apiFetch(endpoint) {
+  try {
+    const r = await fetch(API + endpoint);
+    if (!r.ok) throw new Error(r.statusText);
+    return await r.json();
+  } catch(e) {
+    console.error(endpoint, e);
+    return null;
+  }
+}
+
+async function loadStatus() {
+  const d = await apiFetch('/status');
+  if (!d) { document.getElementById('status-text').textContent = 'API offline'; return; }
+  document.getElementById('status-text').textContent = `v${d.version} | ${d.timestamp.slice(0,19)}`;
+  document.getElementById('mode-badge').textContent = d.use_mock ? 'MOCK MODE' : d.mode.toUpperCase();
+}
+
+async function loadPortfolio() {
+  const d = await apiFetch('/portfolio');
+  if (!d) return;
+  const pnlEl = document.getElementById('kpi-pnl');
+  pnlEl.textContent = fmt(d.total_pnl);
+  pnlEl.className = `value ${colorClass(d.total_pnl)}`;
+  document.getElementById('kpi-pnl-sub').textContent = fmtPct(d.total_return_pct);
+  document.getElementById('kpi-portfolio').textContent = fmt(d.portfolio_value);
+  document.getElementById('kpi-portfolio-sub').textContent = `Cash: ${fmt(d.cash)}`;
+  const rEl = document.getElementById('kpi-realised');
+  rEl.textContent = fmt(d.realised_pnl);
+  rEl.className = `value ${colorClass(d.realised_pnl)}`;
+  const uEl = document.getElementById('kpi-unrealised');
+  uEl.textContent = fmt(d.unrealised_pnl);
+  uEl.className = `value ${colorClass(d.unrealised_pnl)}`;
+}
+
+async function loadEquityCurve() {
+  const d = await apiFetch('/equity-curve');
+  if (!d || !d.dates || d.dates.length === 0) return;
+
+  const colors = ['#4fc3f7','#4caf50','#ffc107','#f44336','#ce93d8','#80cbc4'];
+  const datasets = Object.entries(d.curves).map(([name, vals], i) => ({
+    label: name.replace(/_/g, ' '),
+    data:  vals.map(v => v === '' ? null : v),
+    borderColor: colors[i % colors.length],
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    pointRadius: 0,
+    tension: 0.3,
+    spanGaps: true,
+  }));
+
+  const ctx = document.getElementById('equityChart').getContext('2d');
+  if (equityChart) equityChart.destroy();
+  equityChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: d.dates, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#888aaa', font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { color: '#555577', maxTicksLimit: 8 }, grid: { color: '#1e1e32' } },
+        y: { ticks: { color: '#555577', callback: v => '₹' + Number(v).toLocaleString('en-IN', {maximumFractionDigits: 0}) }, grid: { color: '#1e1e32' } }
+      }
+    }
+  });
+  document.getElementById('eq-updated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+}
+
+async function loadQuotes() {
+  const d = await apiFetch('/quotes');
+  if (!d) return;
+  const el = document.getElementById('quotes-content');
+  const rows = Object.entries(d.quotes).map(([sym, price]) =>
+    `<tr><td style="font-weight:600">${sym.replace('NSE:','')}</td><td style="text-align:right;font-size:1rem;font-weight:700;color:#7c9ef8">${fmt(price)}</td></tr>`
+  ).join('');
+  el.innerHTML = `<table><thead><tr><th>Symbol</th><th style="text-align:right">LTP</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+async function loadSignals() {
+  const d = await apiFetch('/signals');
+  if (!d || !d.signals.length) return;
+  const grid = document.getElementById('signals-grid');
+  grid.innerHTML = d.signals.map(s => `
+    <div class="sig-card">
+      <div class="sym">${s.symbol}</div>
+      <div class="strat">${s.strategy.replace(/_/g,' ')}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="price ${s.close > 0 ? 'neu' : ''}">${fmt(s.close)}</span>
+        ${signalLabel(s.signal)}
+      </div>
+      <div class="reason">${s.trade_reason || 'No recent signal'}</div>
+      <div style="font-size:0.68rem;color:#444466;margin-top:4px">${s.date.slice(0,10)}</div>
+    </div>
+  `).join('');
+}
+
+async function loadPositions() {
+  const d = await apiFetch('/positions');
+  if (!d) return;
+  const el = document.getElementById('positions-content');
+  if (!d.positions.length) { el.innerHTML = '<p class="empty">No open positions</p>'; return; }
+  const rows = d.positions.map(p => `
+    <tr>
+      <td style="font-weight:700">${p.symbol}</td>
+      <td>${p.qty}</td>
+      <td>${fmt(p.avg_price)}</td>
+      <td>${fmt(p.current_price)}</td>
+      <td class="${colorClass(p.unrealised_pnl)}">${fmt(p.unrealised_pnl)} (${fmtPct(p.unrealised_pct)})</td>
+    </tr>`).join('');
+  el.innerHTML = `<table><thead><tr><th>Symbol</th><th>Qty</th><th>Entry</th><th>LTP</th><th>Unrealised P&L</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+async function loadTrades() {
+  const d = await apiFetch('/trades');
+  if (!d) return;
+  const el = document.getElementById('trades-content');
+  if (!d.trades.length) { el.innerHTML = '<p class="empty">No completed trades yet</p>'; return; }
+  const rows = d.trades.slice(0,10).map(t => `
+    <tr>
+      <td style="font-weight:700">${t.symbol || '—'}</td>
+      <td>${(t.timestamp || '').slice(0,10)}</td>
+      <td>${fmt(t.price)}</td>
+      <td>${t.qty}</td>
+      <td class="${colorClass(t.net_pnl || 0)}">${fmt(t.net_pnl || 0)}</td>
+      <td><span class="badge ${t.outcome === 'WIN' ? 'win' : 'loss'}">${t.outcome || '—'}</span></td>
+      <td style="font-size:0.72rem;color:#555577">${(t.strategy || '').replace(/_/g,' ')}</td>
+    </tr>`).join('');
+  el.innerHTML = `<table><thead><tr><th>Symbol</th><th>Date</th><th>Price</th><th>Qty</th><th>Net P&L</th><th>Result</th><th>Strategy</th></tr></thead><tbody>${rows}</tbody></table>`;
+  document.getElementById('trades-updated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+}
+
+async function loadBacktest() {
+  const d = await apiFetch('/backtest');
+  if (!d || !d.summary.length) return;
+  const el = document.getElementById('backtest-content');
+  const rows = d.summary.map(s => `
+    <tr>
+      <td style="font-weight:700">${s.symbol}</td>
+      <td>${(s.strategy || '').replace(/_/g,' ')}</td>
+      <td>${s.total_trades}</td>
+      <td>${s.win_rate_pct}%</td>
+      <td class="${colorClass(s.total_pnl)}">${fmt(s.total_pnl)}</td>
+      <td class="${colorClass(s.total_return_pct)}">${fmtPct(s.total_return_pct)}</td>
+      <td class="${colorClass(-s.max_drawdown_pct)}">${s.max_drawdown_pct}%</td>
+      <td>${s.sharpe_ratio}</td>
+      <td>${s.profit_factor}</td>
+    </tr>`).join('');
+  el.innerHTML = `<table>
+    <thead><tr><th>Symbol</th><th>Strategy</th><th>Trades</th><th>Win%</th><th>Net P&L</th><th>Return%</th><th>MaxDD%</th><th>Sharpe</th><th>PF</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+async function runBacktest() {
+  const el = document.getElementById('backtest-content');
+  el.innerHTML = '<p class="loading">⏳ Running backtest...</p>';
+  try {
+    const r = await fetch(API + '/run-backtest', { method: 'POST' });
+    const d = await r.json();
+    await loadBacktest();
+    await loadEquityCurve();
+  } catch(e) { el.innerHTML = '<p class="empty">Backtest failed. Is the server running?</p>'; }
+}
+
+async function runSignals() {
+  document.getElementById('signals-grid').innerHTML = '<p class="loading">⏳ Regenerating signals...</p>';
+  try {
+    await fetch(API + '/run-signals', { method: 'POST' });
+    await loadSignals();
+  } catch(e) {}
+}
+
+async function refreshAll() {
+  await Promise.all([loadStatus(), loadPortfolio(), loadQuotes(), loadSignals(), loadPositions(), loadTrades(), loadBacktest(), loadEquityCurve()]);
+}
+
+// Initial load
+refreshAll();
+// Auto-refresh every 30 seconds
+setInterval(refreshAll, 30000);
+</script>
+</body>
+</html>
